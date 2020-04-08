@@ -1,4 +1,4 @@
-# Mike Gainey's Sudoku Solver in Julia (21 Feb 2020)
+# returning the result rather than just printing it
 
 # the input; 0 == blank cell
 board = [5 0 0 0 0 0 3 0 1;
@@ -27,15 +27,19 @@ hard_board = [0 0 0 0 0 0 0 0 0;
 # given an unsolved board, print the solved board
 function solve(board, cell=(row=1,col=1))
     if cell == "board complete"
-        display(board)
+        return board
     elseif board[cell.row, cell.col] != 0 # ... is not blank
         # the cell digit is given -- just go to the next cell
         solve(board, next_cell(cell))
     else
         # recursive calls using each candidate digit
         for digit in candidates(board, cell)
-            solve(next_board(board, cell, digit), next_cell(cell))
+            result = solve(next_board(board, cell, digit), next_cell(cell))
+            if length(result) == 81 # a board has 81 cells
+                return result
+            end
         end
+        return "no solution" # anything that's not length 81
     end
 end
 
@@ -106,3 +110,4 @@ end
 # TODO
 # 1) use this algorithm: https://youtu.be/G_UYXzGuqvM
 # 2) solve all squares with 1 possibility first, then 2, etc.
+
